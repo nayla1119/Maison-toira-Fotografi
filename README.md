@@ -74,7 +74,6 @@ Desain dibuat dengan konsep:
 - Minimalist
 - Professional Photography
 
-
 ---
 
 # 🗄️ Database
