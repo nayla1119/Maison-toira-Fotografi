@@ -14,28 +14,30 @@ $pesan = "";
 // 1. AMBIL DATA FOTOGRAFER UNTUK DROPDOWN
 $query_fotografer = mysqli_query($koneksi, "SELECT ph.id_fotografer, u.nama FROM photographers ph JOIN users u ON ph.id_user = u.id_user");
 
-// 2. AMBIL DATA PAKET UNTUK DROPDOWN
-// SESUAIKAN DENGAN NAMA DI PHPMyAdmin
-$query_paket = mysqli_query($koneksi, "SELECT id_package, package_name FROM packages");
+// 2. AMBIL DATA PAKET, HARGA, DAN NAMA FOTOGRAFER DARI PORTOFOLIO
+$query_paket = mysqli_query($koneksi, "SELECT p.id_portofolio, pk.package_name, p.price, u.nama as nama_fotografer 
+                                       FROM portofolio p
+                                       JOIN packages pk ON p.id_paket = pk.id_package
+                                       JOIN photographers ph ON p.id_fotografer = ph.id_fotografer
+                                       JOIN users u ON ph.id_user = u.id_user");
 
 // 3. PROSES SIMPAN FORM BOOKING JASA
 if (isset($_POST['konfirmasi_booking'])) {
-    $id_photographer = mysqli_real_escape_string($koneksi, $_POST['id_fotografer']);
-    $id_package      = mysqli_real_escape_string($koneksi, $_POST['id_package']);
-    $tanggal         = mysqli_real_escape_string($koneksi, $_POST['tanggal_pemotretan']);
-    $lokasi          = mysqli_real_escape_string($koneksi, $_POST['lokasi_acara']);
-    $catatan         = mysqli_real_escape_string($koneksi, $_POST['catatan_tambahan']);
-    $status          = "pending"; // Status awal booking otomatis pending
+    // Pastikan semua variabel sudah dibersihkan sebelum masuk ke query
+    $id_customer   = intval($_SESSION['id_user']); // Gunakan intval untuk angka
+    $id_portofolio = intval($_POST['id_portofolio']); // Gunakan intval untuk angka
+    $tanggal       = mysqli_real_escape_string($koneksi, $_POST['tanggal_pemotretan']);
+    $lokasi        = mysqli_real_escape_string($koneksi, $_POST['lokasi_acara']);
+    $catatan       = mysqli_real_escape_string($koneksi, $_POST['catatan_tambahan']);
+    $status        = "pending";
 
-    // Query insert data ke tabel bookings
-    // Sesuaikan nama kolom tabel bookings milikmu jika ada perbedaan (misal: tanggal_pemotretan atau lokasi)
-    $query_insert = "INSERT INTO bookings (id_customer, id_photographer, id_package, created_at, lokasi, catatan, status) 
-                     VALUES ('$id_customer', '$id_photographer', '$id_package', '$tanggal', '$lokasi', '$catatan', '$status')";
+    $query_insert = "INSERT INTO bookings (id_customer, id_portofolio, created_at, lokasi, catatan, status) 
+                    VALUES ('$id_customer', '$id_portofolio', '$tanggal', '$lokasi', '$catatan', '$status')";
 
     if (mysqli_query($koneksi, $query_insert)) {
         $pesan = "<div class='alert alert-success'>Booking berhasil diajukan! Menunggu konfirmasi admin.</div>";
     } else {
-        $pesan = "<div class='alert alert-danger'>Gagal melakukan booking: " . mysqli_error($koneksi) . "</div>";
+        $pesan = "<div class='alert alert-danger'>Gagal: " . mysqli_error($koneksi) . "</div>";
     }
 }
 ?>
@@ -195,21 +197,21 @@ if (isset($_POST['konfirmasi_booking'])) {
                 
                 <div class="form-group">
                     <label>Fotografer</label>
-                    <select name="id_photographer" class="form-control" required>
+                    <select name="id_fotografer" class="form-control" required>
                         <option value="">-- Pilih Fotografer --</option>
                         <?php while($ft = mysqli_fetch_assoc($query_fotografer)) : ?>
-                            <option value="<?php echo $ft['id_photographer']; ?>"><?php echo htmlspecialchars($ft['nama']); ?></option>
+                            <option value="<?php echo $ft['id_fotografer']; ?>"><?php echo htmlspecialchars($ft['nama']); ?></option>
                         <?php endwhile; ?>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label>Paket Layanan</label>
-                    <select name="id_package" class="form-control" required>
-                        <option value="">-- Pilih Paket Layanan --</option>
+                    <label>Pilih Paket Layanan</label>
+                    <select name="id_portofolio" class="form-control" required>
+                        <option value="">-- Pilih Paket & Harga --</option>
                         <?php while($pk = mysqli_fetch_assoc($query_paket)) : ?>
-                            <option value="<?php echo $pk['id_package']; ?>">
-                                <?php echo htmlspecialchars($pk['package_name']) . " - Rp " . number_format($pk['price'], 0, ',', '.'); ?>
+                            <option value="<?php echo $pk['id_portofolio']; ?>">
+                                <?php echo htmlspecialchars($pk['package_name']) . " (" . $pk['nama_fotografer'] . ") - Rp " . number_format($pk['price'], 0, ',', '.'); ?>
                             </option>
                         <?php endwhile; ?>
                     </select>

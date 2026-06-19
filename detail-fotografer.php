@@ -67,11 +67,23 @@ $result_ulasan = mysqli_query($koneksi, $query_ulasan) or die(mysqli_error($kone
 
         <section class="photographer-profile-hero">
             <div class="profile-hero-left">
-                <p>Debug Nama File: <?php echo $data['foto_profile']; ?></p>
                 <?php 
-                $foto_profil = !empty($data['profile_image']) ? 'uploads/foto_profil/' . $data['foto_profile'] : 'assets/img/photographers/default-avatar.png';
+                // 1. Pastikan kita pakai kolom 'profile_image' (sesuai database Anda)
+                $nama_file = $data['profile_image']; 
+                
+                // 2. Tentukan folder yang benar
+                $folder_path = 'assets/img/photographers/';
+                
+                // 3. Logika pengecekan: Jika nama file ada di database, gabungkan dengan folder.
+                // Jika kosong, pakai default.
+                if (!empty($nama_file) && file_exists($folder_path . $nama_file)) {
+                    $foto_profil = $folder_path . $nama_file;
+                } else {
+                    $foto_profil = 'assets/img/photographers/default-avatar.png';
+                }
                 ?>
-                <img src="<?php echo $foto_profil; ?>" alt="<?php echo htmlspecialchars($data['nama']); ?>">
+                
+                <img src="<?php echo $foto_profil; ?>" alt="<?php echo htmlspecialchars($data['nama'] ?? 'Fotografer'); ?>" style="width: 150px; border-radius: 50%;">
             </div>
             
             <div class="profile-hero-right">

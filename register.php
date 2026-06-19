@@ -17,6 +17,7 @@ if (isset($_SESSION['id_user'])) {
 if (isset($_POST['register'])) {
     $nama = mysqli_real_escape_string($koneksi, $_POST['nama']);
     $email = mysqli_real_escape_string($koneksi, $_POST['email']);
+    $nomor_telepon = mysqli_real_escape_string($koneksi, $_POST['nomor_telepon']); // Baris baru
     $password = $_POST['password'];
     $konfirmasi_password = $_POST['konfirmasi_password'];
     $role_pilihan = $_POST['role']; // Mengambil data 'pelanggan' atau 'fotografer' dari input hidden
@@ -33,7 +34,8 @@ if (isset($_POST['register'])) {
         $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
         // Query insert data ke tabel users sesuai role pilihan
-        $query = "INSERT INTO users (nama, email, password, role) VALUES ('$nama', '$email', '$password_hash', '$role_pilihan')";
+        $query = "INSERT INTO users (nama, email, nomor_telepon, password, role) 
+          VALUES ('$nama', '$email', '$nomor_telepon', '$password_hash', '$role_pilihan')";
         
         if (mysqli_query($koneksi, $query)) {
             // Jika berhasil, kirim pesan sukses lewat session lalu lempar ke login.php
@@ -128,6 +130,11 @@ if (isset($_POST['register'])) {
                 <div class="form-group">
                     <label>Alamat Email</label>
                     <input type="email" name="email" class="form-control" placeholder="nama@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Nomor Telepon / WhatsApp</label>
+                    <input type="number" name="nomor_telepon" class="form-control" placeholder="Contoh: 08123456789" required>
                 </div>
 
                 <div class="form-group">

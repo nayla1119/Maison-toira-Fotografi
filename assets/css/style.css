@@ -478,3 +478,22 @@ footer p {
 .portfolio-item:hover img {
     transform: scale(1.05);
 }
+
+/* Pastikan ini ada di baris paling bawah CSS Anda */
+.btn-detail {
+    display: inline-block !important;
+    margin-top: 15px !important;
+    padding: 10px 20px !important;
+    border: 1px solid var(--text-color) !important; /* Mengikuti warna teks tema */
+    color: var(--text-color) !important;            /* Mengikuti warna teks tema */
+    background-color: transparent !important;       /* Transparan */
+    border-radius: 8px !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-detail:hover {
+    background-color: var(--text-color) !important; /* Jadi warna gelap saat hover */
+    color: #ffffff !important;                      /* Tulisan jadi putih saat hover */
+}

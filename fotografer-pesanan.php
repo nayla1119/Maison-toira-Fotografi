@@ -24,11 +24,13 @@ if (isset($_GET['selesai'])) {
 }
 
 // Ambil riwayat atau pesanan aktif fotografer ini
-$query = mysqli_query($koneksi, "SELECT b.*, u.nama as pelanggan, p.package_name
+$query = mysqli_query($koneksi, "SELECT b.*, u.nama as pelanggan, pk.package_name
                                 FROM bookings b 
                                 JOIN users u ON b.id_customer = u.id_user 
-                                JOIN packages p ON b.id_package = p.id_package
-                                WHERE b.id_fotografer = '$id_photo' ORDER BY b.id_booking DESC");
+                                JOIN portofolio port ON b.id_portofolio = port.id_portofolio 
+                                JOIN packages pk ON port.id_paket = pk.id_package 
+                                WHERE b.id_fotografer = '$id_photo' 
+                                ORDER BY b.id_booking DESC");
 ?>
 <!DOCTYPE html>
 <html lang="id">

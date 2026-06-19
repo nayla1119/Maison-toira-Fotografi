@@ -14,9 +14,9 @@ $id_photo = $d_photo['id_fotografer'] ?? 0;
 
 // --- POSISI KODE PROSES UPLOAD DI SINI ---
 if (isset($_POST['upload_portfolio'])) {
-    // GANTI: id_kategori menjadi id_paket
     $title = mysqli_real_escape_string($koneksi, $_POST['judul']);
     $id_paket = intval($_POST['id_paket']);
+    $price = intval($_POST['price']); // 1. Tambahkan baris ini
     
     if ($_FILES['portfolio_file']['name'] != '') {
         $target_dir = "assets/img/portfolio/";
@@ -33,9 +33,11 @@ if (isset($_POST['upload_portfolio'])) {
             $tanggal_hari_ini = date('Y-m-d');
             $deskripsi_default = "Karya portofolio " . $title; 
             
-            // GANTI: id_kategori menjadi id_paket di dalam query
-            $insert = mysqli_query($koneksi, "INSERT INTO portofolio (id_fotografer, id_paket, judul, gambar, deskripsi, tanggal_upload) 
-                                              VALUES ('$id_photo', '$id_paket', '$title', '$foto_nama', '$deskripsi_default', '$tanggal_hari_ini')") 
+            // 2. Tambahkan kolom 'price' dan nilai '$price' di bawah ini
+            $insert = mysqli_query($koneksi, "INSERT INTO portofolio 
+                                            (id_fotografer, id_paket, judul, gambar, deskripsi, tanggal_upload, price) 
+                                            VALUES 
+                                            ('$id_photo', '$id_paket', '$title', '$foto_nama', '$deskripsi_default', '$tanggal_hari_ini', '$price')") 
                       or die(mysqli_error($koneksi)); 
             
             if ($insert) {
@@ -288,9 +290,7 @@ if ($q_gallery) {
                             <select name="id_paket" class="form-control" required>
                                 <option value="">-- Pilih Kategori Paket --</option>
                                 <?php
-                                // Pastikan nama tabel dan kolom sesuai dengan yang ada di database Anda
                                 $q_pak = mysqli_query($koneksi, "SELECT id_package, package_name FROM packages");
-                                
                                 if ($q_pak && mysqli_num_rows($q_pak) > 0) {
                                     while ($pak = mysqli_fetch_assoc($q_pak)) {
                                         echo "<option value='".$pak['id_package']."'>".$pak['package_name']."</option>";
@@ -301,6 +301,12 @@ if ($q_gallery) {
                                 ?>
                             </select>
                         </div>
+
+                        <div class="form-group">
+                            <label>Harga Jasa (Rp)</label>
+                            <input type="number" name="price" class="form-control" placeholder="Contoh: 500000" required>
+                        </div>
+
                         <div class="form-group">
                             <label>Pilih File Foto</label>
                             <input type="file" name="portfolio_file" accept="image/*" required>
