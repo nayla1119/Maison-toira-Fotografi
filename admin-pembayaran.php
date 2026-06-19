@@ -29,12 +29,13 @@ if ($filter == 'menunggu') {
     $where_clause = "WHERE b.status = 'rejected'";
 }
 
-$query_sql = "SELECT b.*, u.nama as pelanggan, u_photo.nama as fotografer, p.package_name 
+$query_sql = "SELECT b.*, u.nama as pelanggan, u_photo.nama as fotografer, pk.package_name, port.price 
               FROM bookings b 
               JOIN users u ON b.id_customer = u.id_user 
               JOIN photographers ph ON b.id_fotografer = ph.id_fotografer 
               JOIN users u_photo ON ph.id_user = u_photo.id_user
-              JOIN packages p ON b.id_package = p.id_package 
+              JOIN portofolio port ON b.id_portofolio = port.id_portofolio 
+              JOIN packages pk ON port.id_paket = pk.id_package 
               $where_clause 
               ORDER BY b.id_booking DESC";
 
