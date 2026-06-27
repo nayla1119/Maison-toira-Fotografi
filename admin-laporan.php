@@ -10,7 +10,11 @@ if (!isset($_SESSION['id_user']) || $_SESSION['role'] !== 'admin') {
 
 // Ambil total pendapatan
 // Mengganti SUM(p.price) menjadi COUNT(b.id_booking)
-$q_total = mysqli_query($koneksi, "SELECT COUNT(b.id_booking) as total FROM bookings b JOIN packages p ON b.id_package = p.id_package WHERE b.status = 'completed'");
+$q_total = mysqli_query($koneksi, "SELECT COUNT(b.id_booking) as total 
+                                   FROM bookings b 
+                                   JOIN portofolio port ON b.id_portofolio = port.id_portofolio 
+                                   JOIN packages p ON port.id_paket = p.id_package 
+                                   WHERE b.status = 'completed'");
 $d_total = mysqli_fetch_assoc($q_total);
 
 // Nanti saat menampilkan hasilnya, gunakan $d_total['total']
@@ -20,8 +24,10 @@ $d_total = mysqli_fetch_assoc($q_total);
 $query = mysqli_query($koneksi, "SELECT b.*, u.nama, p.package_name 
                                 FROM bookings b 
                                 JOIN users u ON b.id_customer = u.id_user 
-                                JOIN packages p ON b.id_package = p.id_package 
-                                WHERE b.status = 'completed' ORDER BY b.id_booking DESC");
+                                JOIN portofolio port ON b.id_portofolio = port.id_portofolio 
+                                JOIN packages p ON port.id_paket = p.id_package 
+                                WHERE b.status = 'completed' 
+                                ORDER BY b.id_booking DESC");
 ?>
 <!DOCTYPE html>
 <html lang="id">

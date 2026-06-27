@@ -24,14 +24,17 @@ $res_book = mysqli_fetch_assoc($q_book);
 $q_money = mysqli_query($koneksi, "SELECT COUNT(b.id_booking) as total FROM bookings b WHERE b.status = 'completed'");
 $res_money = mysqli_fetch_assoc($q_money);
 
-// 5. Ambil 5 Pesanan Terbaru buat Tabel
-$recent_orders = mysqli_query($koneksi, "SELECT b.*, u.nama as pelanggan, u_photo.nama as fotografer, pk.package_name 
-    FROM bookings b 
-    JOIN users u ON b.id_customer = u.id_user 
-    JOIN photographers ph ON b.id_fotografer = ph.id_fotografer 
-    JOIN users u_photo ON ph.id_user = u_photo.id_user
-    JOIN packages pk ON b.id_package = pk.id_package
-    ORDER BY b.id_booking DESC LIMIT 5");
+// 5. Query Pesanan Terbaru
+$sql_recent = "SELECT b.*, u.nama AS pelanggan, pk.package_name, u2.nama AS fotografer
+               FROM bookings b 
+               LEFT JOIN users u ON b.id_customer = u.id_user 
+               LEFT JOIN portofolio port ON b.id_portofolio = port.id_portofolio 
+               LEFT JOIN packages pk ON port.id_paket = pk.id_package
+               LEFT JOIN photographers ph ON b.id_fotografer = ph.id_fotografer
+               LEFT JOIN users u2 ON ph.id_user = u2.id_user
+               ORDER BY b.created_at DESC LIMIT 5";
+
+$recent_orders = mysqli_query($koneksi, $sql_recent);
 ?>
 <!DOCTYPE html>
 <html lang="id">

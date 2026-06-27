@@ -49,7 +49,8 @@ if (isset($_POST['upload_bukti'])) {
 
 // 3. QUERY UNTUK MENGAMBIL RIWAYAT BOOKING MILIK USER YANG SEDANG LOGIN
 // PERBAIKAN: Ganti u.name menjadi u.nama, tapi ALIAS-nya tetap AS nama_fotografer
-$query_history = "SELECT b.*, u.nama AS nama_fotografer, pk.package_name 
+// Tambahkan port.price di bagian SELECT
+$query_history = "SELECT b.*, u.nama AS nama_fotografer, pk.package_name, port.price 
                   FROM bookings b
                   JOIN photographers ph ON b.id_fotografer = ph.id_fotografer
                   JOIN users u ON ph.id_user = u.id_user

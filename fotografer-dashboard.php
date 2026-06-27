@@ -41,12 +41,11 @@ $total_income = $income_data['total'] ?? 0;
 // 3. Query Pesanan Terbaru (Limit 5)
 $query_recent = "SELECT b.*, u.nama AS nama_pelanggan, pk.package_name 
                  FROM bookings b 
-                 JOIN users u ON b.id_customer = u.id_user 
-                 JOIN portofolio port ON b.id_portofolio = port.id_portofolio 
-                 JOIN packages pk ON port.id_paket = pk.id_package 
+                 LEFT JOIN users u ON b.id_customer = u.id_user 
+                 LEFT JOIN portofolio port ON b.id_portofolio = port.id_portofolio 
+                 LEFT JOIN packages pk ON port.id_paket = pk.id_package 
                  WHERE b.id_fotografer = '$id_fotografer' 
                  ORDER BY b.created_at DESC LIMIT 5";
-
 $recent_bookings = mysqli_query($koneksi, $query_recent);
 ?>
 

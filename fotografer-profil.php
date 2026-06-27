@@ -25,7 +25,7 @@ if (isset($_POST['update_profil'])) {
 
     // Logika Upload Foto Profil
     $foto_nama = $data['profile_image'] ?? ''; 
-    if ($_FILES['profile_image']['name'] != '') {
+    if (!empty($_FILES['profile_image']['name'])) {
         $target_dir = "assets/img/photographers/";
         
         if (!file_exists($target_dir)) {
@@ -36,7 +36,10 @@ if (isset($_POST['update_profil'])) {
         $foto_nama = "photo_" . $id_user . "_" . time() . "." . $file_extension;
         $target_file = $target_dir . $foto_nama;
         
-        move_uploaded_file($_FILES['profile_image']['tmp_name'], $target_file);
+        // PENTING: Cek apakah file berhasil di-upload
+        if (!move_uploaded_file($_FILES['profile_image']['tmp_name'], $target_file)) {
+            $pesan = "<div class='alert alert-danger'>Gagal mengunggah foto. Periksa izin folder (permissions).</div>";
+        }
     }
 
     // Cek kolom tambahan untuk menghindari error SQL jika belum ada di database
@@ -55,7 +58,8 @@ if (isset($_POST['update_profil'])) {
         $query = mysqli_query($koneksi, "SELECT * FROM photographers WHERE id_user = '$id_user'");
         $data = mysqli_fetch_assoc($query);
     } else {
-        $pesan = "<div class='alert alert-danger'><i class='fa-solid fa-circle-exclamation'></i> Gagal memperbarui data profil.</div>";
+        // Ganti bagian else Anda dengan ini sementara untuk melihat error
+        $pesan = "<div class='alert alert-danger'>Gagal: " . mysqli_error($koneksi) . "</div>";
     }
 }
 ?>

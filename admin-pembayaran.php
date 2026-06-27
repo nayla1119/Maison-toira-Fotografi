@@ -30,7 +30,7 @@ if ($filter == 'menunggu') {
 }
 
 $query_sql = "SELECT b.*, u.nama as pelanggan, u_photo.nama as fotografer, pk.package_name, port.price 
-              FROM bookings b 
+              FROM bookings b
               JOIN users u ON b.id_customer = u.id_user 
               JOIN photographers ph ON b.id_fotografer = ph.id_fotografer 
               JOIN users u_photo ON ph.id_user = u_photo.id_user
@@ -276,9 +276,16 @@ $query = mysqli_query($koneksi, $query_sql) or die(mysqli_error($koneksi));
                             <td><?= htmlspecialchars($row['fotografer']); ?></td>
                             <td><strong>Rp <?= number_format($row['price'], 0, ',', '.'); ?></strong></td>
                             <td>
-                                <div class="proof-img">
-                                    <i class="fa-regular fa-image" style="color: var(--text-muted);"></i>
-                                </div>
+                                <?php if (!empty($row['bukti_transfer'])) : ?>
+                                    <a href="uploads/bukti_transfer/<?= $row['bukti_transfer']; ?>" target="_blank">
+                                        <img src="uploads/bukti_transfer/<?= $row['bukti_transfer']; ?>" 
+                                            style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; cursor: pointer;">
+                                    </a>
+                                <?php else : ?>
+                                    <div class="proof-img">
+                                        <i class="fa-regular fa-image" style="color: var(--text-muted);"></i>
+                                    </div>
+                                <?php endif; ?>
                             </td>
                             <td>
                                 <?php 
